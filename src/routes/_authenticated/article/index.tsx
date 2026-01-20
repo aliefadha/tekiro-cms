@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft, FileText, Pen, Plus } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -20,6 +20,7 @@ export const Route = createFileRoute('/_authenticated/article/')({
 })
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const {
     data: articles = [],
     isLoading,
@@ -86,64 +87,68 @@ function RouteComponent() {
           {articles.map((article) => {
             const isPublished = !!article.publishedAt
             return (
-              <Link
+              <Card
                 key={article.id}
-                to="/article/$id"
-                params={{ id: article.id }}
+                className="overflow-hidden cursor-pointer hover:border-primary transition-colors"
+                onClick={() =>
+                  navigate({ to: '/article/$id', params: { id: article.id } })
+                }
               >
-                <Card className="overflow-hidden cursor-pointer hover:border-primary transition-colors">
-                  <CardContent className="p-4">
-                    <div className="aspect-video bg-muted rounded-md overflow-hidden relative group">
-                      {article.primaryImage ? (
-                        <img
-                          src={getImageUrl(article.primaryImage)}
-                          alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full bg-muted">
-                          <FileText className="h-12 w-12 text-muted-foreground" />
-                        </div>
+                <CardContent className="p-4">
+                  <div className="aspect-video bg-muted rounded-md overflow-hidden relative group">
+                    {article.primaryImage ? (
+                      <img
+                        src={getImageUrl(article.primaryImage)}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full bg-muted">
+                        <FileText className="h-12 w-12 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+
+                  <CardHeader className="p-4 pt-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant={isPublished ? 'default' : 'secondary'}>
+                        {isPublished ? 'Published' : 'Draft'}
+                      </Badge>
+                      {article.publishedAt && (
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(article.publishedAt).toLocaleDateString(
+                            'en-GB',
+                            {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: 'numeric',
+                            },
+                          )}
+                        </span>
                       )}
                     </div>
+                    <CardTitle className="line-clamp-2">
+                      {article.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-3">
+                      {article.excerpt || 'No excerpt available.'}
+                    </CardDescription>
+                  </CardHeader>
 
-                    <CardHeader className="p-4 pt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant={isPublished ? 'default' : 'secondary'}>
-                          {isPublished ? 'Published' : 'Draft'}
-                        </Badge>
-                        {article.publishedAt && (
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(article.publishedAt).toLocaleDateString(
-                              'en-GB',
-                              {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: 'numeric',
-                              },
-                            )}
-                          </span>
-                        )}
-                      </div>
-                      <CardTitle className="line-clamp-2">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-3">
-                        {article.excerpt || 'No excerpt available.'}
-                      </CardDescription>
-                    </CardHeader>
-
-                    <CardFooter className="flex items-center justify-end p-4 pt-0">
-                      <Link to="/article/$id" params={{ id: article.id }}>
-                        <Button variant="ghost" size="sm" className="gap-2">
-                          <Pen className="h-4 w-4" />
-                          <span className="hidden sm:inline">Edit</span>
-                        </Button>
-                      </Link>
-                    </CardFooter>
-                  </CardContent>
-                </Card>
-              </Link>
+                  <CardFooter className="flex items-center justify-end p-4 pt-0">
+                    <Link
+                      to="/article/$id"
+                      params={{ id: article.id }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Button variant="ghost" size="sm" className="gap-2">
+                        <Pen className="h-4 w-4" />
+                        <span className="hidden sm:inline">Edit</span>
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </CardContent>
+              </Card>
             )
           })}
         </div>

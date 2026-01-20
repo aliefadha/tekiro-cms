@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -136,13 +136,6 @@ export function ProductTable({
                       onClick={() => navigate({ to: `/product/${product.id}` })}
                     >
                       View
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => navigate({ to: `/product/${product.id}` })}
-                    >
-                      <Pencil className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"

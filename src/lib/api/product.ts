@@ -52,6 +52,8 @@ export interface UpdateProductInput {
   name: string
   description: string
   files?: Array<File>
+  images?: Array<string>
+  imagesToDelete?: Array<string>
   storeUrl?: string
   categoryId: string
 }
@@ -69,6 +71,12 @@ export async function updateProduct(input: UpdateProductInput) {
       formData.append('files', file)
     })
   }
+  if (input.images) {
+    formData.append('images', JSON.stringify(input.images))
+  }
+  if (input.imagesToDelete) {
+    formData.append('imagesToDelete', JSON.stringify(input.imagesToDelete))
+  }
 
   const response = await apiClient.patch<Product>(
     `/product/${input.id}`,
@@ -79,6 +87,16 @@ export async function updateProduct(input: UpdateProductInput) {
 
 export async function deleteProduct(id: string) {
   const response = await apiClient.delete<void>(`/product/${id}`)
+  return response.data
+}
+
+export async function deleteProductImage(
+  productId: string,
+  imageIndex: number,
+) {
+  const response = await apiClient.delete<void>(
+    `/product/${productId}/images/${imageIndex}`,
+  )
   return response.data
 }
 

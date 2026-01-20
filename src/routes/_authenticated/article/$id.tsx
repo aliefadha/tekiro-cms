@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { ArrowLeft, FileText, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { getImageUrl } from '@/lib/api-client'
 import { articleApi } from '@/lib/api/article'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,10 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Badge } from '@/components/ui/badge'
+import { ArticleViewMode } from '@/components/article/article-view-mode'
+import { ArticleEditMode } from '@/components/article/article-edit-mode'
 import {
   Dialog,
   DialogContent,
@@ -54,9 +52,9 @@ function ArticleDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['articles'] })
       setViewMode('view')
     },
-    onError: (error) => {
+    onError: (err) => {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to update article',
+        err instanceof Error ? err.message : 'Failed to update article',
       )
     },
   })
@@ -70,9 +68,9 @@ function ArticleDetailPage() {
       setDeleteDialogOpen(false)
       window.history.back()
     },
-    onError: (error) => {
+    onError: (err) => {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to delete article',
+        err instanceof Error ? err.message : 'Failed to delete article',
       )
     },
   })
@@ -149,10 +147,9 @@ function ArticleDetailPage() {
                   const form = document.getElementById(
                     'edit-form',
                   ) as HTMLFormElement
-                  if (form)
-                    form.dispatchEvent(
-                      new Event('submit', { bubbles: true, cancelable: true }),
-                    )
+                  form.dispatchEvent(
+                    new Event('submit', { bubbles: true, cancelable: true }),
+                  )
                 }}
                 size="sm"
               >
@@ -187,55 +184,14 @@ function ArticleDetailPage() {
 
         {viewMode === 'view' ? (
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">ID</p>
-                <p className="font-mono text-sm">{article.id}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Slug</p>
-                <p className="font-mono text-sm">{article.slug}</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">
-                Primary Image
-              </p>
-              {article.primaryImage ? (
-                <img
-                  src={getImageUrl(article.primaryImage)}
-                  alt={article.title}
-                  className="rounded-lg max-w-lg object-cover"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-48 bg-muted rounded-lg">
-                  <FileText className="h-12 w-12 text-muted-foreground" />
-                </div>
-              )}
-            </div>
-
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Excerpt</p>
-              <p className="text-sm">{article.excerpt}</p>
-            </div>
-
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Content</p>
-              <div className="border rounded-lg p-4 bg-muted/30">
-                <div
-                  className="text-sm prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{
-                    __html: article.contentHtml || 'No content available.',
-                  }}
-                />
-              </div>
-            </div>
+            <ArticleViewMode article={article} />
           </CardContent>
         ) : (
           <CardContent>
-            <form
-              id="edit-form"
+            <ArticleEditMode
+              article={article}
+              onCancel={() => setViewMode('view')}
+              isPending={updateMutation.isPending}
               onSubmit={(e) => {
                 e.preventDefault()
                 const form = e.currentTarget
@@ -254,7 +210,7 @@ function ArticleDetailPage() {
                   '[name="file"]',
                 ) as HTMLInputElement
 
-                if (!titleInput?.value || !excerptInput?.value) {
+                if (!titleInput.value || !excerptInput.value) {
                   toast.error('Please fill in all required fields')
                   return
                 }
@@ -275,84 +231,7 @@ function ArticleDetailPage() {
                   file: fileInput.files?.[0] || undefined,
                 })
               }}
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-title">Title *</Label>
-                  <Input
-                    id="edit-title"
-                    name="title"
-                    defaultValue={article.title}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-excerpt">Excerpt *</Label>
-                  <textarea
-                    id="edit-excerpt"
-                    name="excerpt"
-                    defaultValue={article.excerpt}
-                    rows={3}
-                    required
-                    className="min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-content">Content *</Label>
-                  <input
-                    type="hidden"
-                    name="content"
-                    value={article.contentHtml}
-                  />
-                  <RichTextEditor
-                    content={article.contentHtml}
-                    onChange={(html) => {
-                      const contentInput = document.querySelector(
-                        '[name="content"]',
-                      ) as HTMLInputElement
-                      if (contentInput) {
-                        contentInput.value = html
-                      }
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-file">Primary Image</Label>
-                  <Input
-                    id="edit-file"
-                    name="file"
-                    type="file"
-                    accept="image/*"
-                  />
-                  {article.primaryImage && (
-                    <div className="mt-2">
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Current Image:
-                      </p>
-                      <img
-                        src={getImageUrl(article.primaryImage)}
-                        alt={article.title}
-                        className="rounded-lg max-w-lg max-h-64 object-cover border"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-3 pt-4 border-t">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setViewMode('view')}
-                    disabled={updateMutation.isPending}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={updateMutation.isPending}>
-                    {updateMutation.isPending ? 'Saving...' : 'Save'}
-                  </Button>
-                </div>
-              </div>
-            </form>
+            />
           </CardContent>
         )}
 
@@ -361,7 +240,7 @@ function ArticleDetailPage() {
             <DialogHeader>
               <DialogTitle>Delete Article</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete article "{article?.title}"? This
+                Are you sure you want to delete article "{article.title}"? This
                 action cannot be undone.
               </DialogDescription>
             </DialogHeader>
@@ -375,7 +254,7 @@ function ArticleDetailPage() {
               <Button
                 variant="destructive"
                 onClick={() => {
-                  if (article) deleteMutation.mutate(article.id)
+                  deleteMutation.mutate(article.id)
                 }}
                 disabled={deleteMutation.isPending}
               >

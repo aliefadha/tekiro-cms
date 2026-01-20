@@ -82,7 +82,7 @@ function CreateArticlePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8 space-y-6">
+    <div className="container mx-auto max-w-6xl px-4 space-y-6">
       <div>
         <Button
           variant="ghost"

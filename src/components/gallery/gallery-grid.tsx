@@ -10,7 +10,6 @@ import type { GalleryImage } from '@/lib/api/gallery'
 import { galleryApi } from '@/lib/api/gallery'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 
 const IMAGE_GRID_CLASSES =
@@ -77,25 +76,17 @@ export function GalleryGrid({ className }: GalleryGridProps) {
     error?: unknown,
     onDelete?: (id: string) => void,
   ) {
-    if (error) {
-      return (
-        <div className="p-8 text-center text-destructive">
-          Failed to load images. Please try again.
-        </div>
-      )
-    }
-
     if (isLoading) {
       return (
-        <div className={IMAGE_GRID_CLASSES}>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square" />
-          ))}
+        <div className="p-8">
+          <div className="flex items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          </div>
         </div>
       )
     }
 
-    if (images.length === 0) {
+    if (images.length === 0 || error) {
       return (
         <div className="p-8 text-center text-muted-foreground">
           No images found.

@@ -57,7 +57,7 @@ function CreateProductDialog({
     onSuccess: () => {
       toast.success('Product created successfully')
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      handleClose()
+      handleClose(false)
     },
     onError: (error) => {
       toast.error(
@@ -86,6 +86,10 @@ function CreateProductDialog({
         setPreviews((prev) => [...prev, reader.result as string])
       reader.readAsDataURL(file)
     })
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   function handleRemoveFile(index: number) {
@@ -112,17 +116,19 @@ function CreateProductDialog({
     })
   }
 
-  function handleClose() {
-    setName('')
-    setDescription('')
-    setFiles([])
-    setPreviews([])
-    setStoreUrl('')
-    setCategoryId('')
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+  function handleClose(open: boolean) {
+    if (!open) {
+      setName('')
+      setDescription('')
+      setFiles([])
+      setPreviews([])
+      setStoreUrl('')
+      setCategoryId('')
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     }
-    onOpenChange(false)
+    onOpenChange(open)
   }
 
   return (
@@ -181,6 +187,15 @@ function CreateProductDialog({
           </div>
           <div className="space-y-2">
             <Label htmlFor="files">Images</Label>
+            <Input
+              ref={fileInputRef}
+              id="files"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFileChange}
+              className="hidden"
+            />
             {previews.length > 0 ? (
               <div className="grid grid-cols-4 gap-2">
                 {previews.map((preview, index) => (
@@ -204,12 +219,17 @@ function CreateProductDialog({
                     </Button>
                   </div>
                 ))}
-                <div className="aspect-square w-full rounded-lg border-2 border-dashed flex items-center justify-center">
+                <div className="aspect-square w-full rounded-lg border-2 border-dashed flex items-center justify-center relative z-10 pointer-events-auto">
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => fileInputRef.current?.click()}
+                    className="relative z-20"
+                    onClick={() =>
+                      fileInputRef.current?.dispatchEvent(
+                        new MouseEvent('click', { bubbles: true }),
+                      )
+                    }
                   >
                     Add More
                   </Button>
@@ -221,16 +241,6 @@ function CreateProductDialog({
                   <p className="text-sm text-muted-foreground">
                     Click to upload or drag and drop
                   </p>
-                  <Input
-                    ref={fileInputRef}
-                    id="files"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleFileChange}
-                    className="hidden"
-                    required
-                  />
                   <Button
                     type="button"
                     variant="outline"
@@ -247,7 +257,7 @@ function CreateProductDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={handleClose}
+              onClick={() => handleClose(false)}
               disabled={createMutation.isPending}
             >
               Cancel
