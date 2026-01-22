@@ -14,6 +14,18 @@ interface ProductViewModeProps {
   }
 }
 
+function formatDescription(description: string) {
+  const lines = description.split('\n').filter((line) => line.trim())
+  if (lines.length === 0) return null
+  return (
+    <ul className="list-disc list-inside space-y-1 text-sm">
+      {lines.map((line, index) => (
+        <li key={index}>{line}</li>
+      ))}
+    </ul>
+  )
+}
+
 export function ProductViewMode({ product }: ProductViewModeProps) {
   return (
     <div className="space-y-4">
@@ -47,7 +59,7 @@ export function ProductViewMode({ product }: ProductViewModeProps) {
       </div>
       <div>
         <p className="text-sm text-muted-foreground mb-1">Description</p>
-        <p className="text-sm">{product.description}</p>
+        {formatDescription(product.description)}
       </div>
       <div>
         <p className="text-sm text-muted-foreground mb-2">Images</p>

@@ -21,7 +21,6 @@ interface ProductEditModeProps {
   onSubmit: (
     e: React.FormEvent<HTMLFormElement>,
     files: Array<File>,
-    imagesToRemove: Array<number>,
     imagesToDelete: Array<string>,
   ) => void
 }
@@ -82,7 +81,7 @@ export function ProductEditMode({
 
   function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    onSubmit(e, files, removedImageIndices, imagesToDelete)
+    onSubmit(e, files, imagesToDelete)
   }
 
   return (

@@ -52,7 +52,6 @@ export interface UpdateProductInput {
   name: string
   description: string
   files?: Array<File>
-  images?: Array<string>
   imagesToDelete?: Array<string>
   storeUrl?: string
   categoryId: string
@@ -70,9 +69,6 @@ export async function updateProduct(input: UpdateProductInput) {
     input.files.forEach((file) => {
       formData.append('files', file)
     })
-  }
-  if (input.images) {
-    formData.append('images', JSON.stringify(input.images))
   }
   if (input.imagesToDelete) {
     formData.append('imagesToDelete', JSON.stringify(input.imagesToDelete))

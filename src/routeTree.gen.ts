@@ -19,6 +19,7 @@ import { Route as AuthenticatedCordlessIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedCategoryIndexRouteImport } from './routes/_authenticated/category/index'
 import { Route as AuthenticatedCatalogueIndexRouteImport } from './routes/_authenticated/catalogue/index'
 import { Route as AuthenticatedArticleIndexRouteImport } from './routes/_authenticated/article/index'
+import { Route as AuthenticatedProductCreateRouteImport } from './routes/_authenticated/product/create'
 import { Route as AuthenticatedProductIdRouteImport } from './routes/_authenticated/product/$id'
 import { Route as AuthenticatedCategoryIdRouteImport } from './routes/_authenticated/category/$id'
 import { Route as AuthenticatedArticleCreateRouteImport } from './routes/_authenticated/article/create'
@@ -80,6 +81,12 @@ const AuthenticatedArticleIndexRoute =
     path: '/article/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedProductCreateRoute =
+  AuthenticatedProductCreateRouteImport.update({
+    id: '/product/create',
+    path: '/product/create',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedProductIdRoute = AuthenticatedProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/article/create': typeof AuthenticatedArticleCreateRoute
   '/category/$id': typeof AuthenticatedCategoryIdRoute
   '/product/$id': typeof AuthenticatedProductIdRoute
+  '/product/create': typeof AuthenticatedProductCreateRoute
   '/article': typeof AuthenticatedArticleIndexRoute
   '/catalogue': typeof AuthenticatedCatalogueIndexRoute
   '/category': typeof AuthenticatedCategoryIndexRoute
@@ -124,6 +132,7 @@ export interface FileRoutesByTo {
   '/article/create': typeof AuthenticatedArticleCreateRoute
   '/category/$id': typeof AuthenticatedCategoryIdRoute
   '/product/$id': typeof AuthenticatedProductIdRoute
+  '/product/create': typeof AuthenticatedProductCreateRoute
   '/article': typeof AuthenticatedArticleIndexRoute
   '/catalogue': typeof AuthenticatedCatalogueIndexRoute
   '/category': typeof AuthenticatedCategoryIndexRoute
@@ -141,6 +150,7 @@ export interface FileRoutesById {
   '/_authenticated/article/create': typeof AuthenticatedArticleCreateRoute
   '/_authenticated/category/$id': typeof AuthenticatedCategoryIdRoute
   '/_authenticated/product/$id': typeof AuthenticatedProductIdRoute
+  '/_authenticated/product/create': typeof AuthenticatedProductCreateRoute
   '/_authenticated/article/': typeof AuthenticatedArticleIndexRoute
   '/_authenticated/catalogue/': typeof AuthenticatedCatalogueIndexRoute
   '/_authenticated/category/': typeof AuthenticatedCategoryIndexRoute
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/category/$id'
     | '/product/$id'
+    | '/product/create'
     | '/article'
     | '/catalogue'
     | '/category'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/article/create'
     | '/category/$id'
     | '/product/$id'
+    | '/product/create'
     | '/article'
     | '/catalogue'
     | '/category'
@@ -189,6 +201,7 @@ export interface FileRouteTypes {
     | '/_authenticated/article/create'
     | '/_authenticated/category/$id'
     | '/_authenticated/product/$id'
+    | '/_authenticated/product/create'
     | '/_authenticated/article/'
     | '/_authenticated/catalogue/'
     | '/_authenticated/category/'
@@ -276,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedArticleIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/product/create': {
+      id: '/_authenticated/product/create'
+      path: '/product/create'
+      fullPath: '/product/create'
+      preLoaderRoute: typeof AuthenticatedProductCreateRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/product/$id': {
       id: '/_authenticated/product/$id'
       path: '/product/$id'
@@ -312,6 +332,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedArticleCreateRoute: typeof AuthenticatedArticleCreateRoute
   AuthenticatedCategoryIdRoute: typeof AuthenticatedCategoryIdRoute
   AuthenticatedProductIdRoute: typeof AuthenticatedProductIdRoute
+  AuthenticatedProductCreateRoute: typeof AuthenticatedProductCreateRoute
   AuthenticatedArticleIndexRoute: typeof AuthenticatedArticleIndexRoute
   AuthenticatedCatalogueIndexRoute: typeof AuthenticatedCatalogueIndexRoute
   AuthenticatedCategoryIndexRoute: typeof AuthenticatedCategoryIndexRoute
@@ -326,6 +347,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedArticleCreateRoute: AuthenticatedArticleCreateRoute,
   AuthenticatedCategoryIdRoute: AuthenticatedCategoryIdRoute,
   AuthenticatedProductIdRoute: AuthenticatedProductIdRoute,
+  AuthenticatedProductCreateRoute: AuthenticatedProductCreateRoute,
   AuthenticatedArticleIndexRoute: AuthenticatedArticleIndexRoute,
   AuthenticatedCatalogueIndexRoute: AuthenticatedCatalogueIndexRoute,
   AuthenticatedCategoryIndexRoute: AuthenticatedCategoryIndexRoute,

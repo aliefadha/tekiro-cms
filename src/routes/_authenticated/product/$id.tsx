@@ -5,7 +5,6 @@ import { ArrowLeft, Pencil, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { productApi } from '@/lib/api/product'
 import { categoryApi } from '@/lib/api/category'
-import { getImageUrl } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ProductViewMode } from '@/components/product/product-view-mode'
@@ -136,7 +135,7 @@ function ProductDetailPage() {
               categories={categories}
               onCancel={() => setViewMode('view')}
               isPending={updateMutation.isPending}
-              onSubmit={async (_, files, imagesToRemove, imagesToDelete) => {
+              onSubmit={(_, files, imagesToDelete) => {
                 const form = document.getElementById(
                   'edit-form',
                 ) as HTMLFormElement
@@ -163,30 +162,11 @@ function ProductDetailPage() {
                   return
                 }
 
-                const keptImages = product.images.filter(
-                  (_, index) => !imagesToRemove.includes(index),
-                )
-
-                const allFiles = [...files]
-
-                for (const image of keptImages) {
-                  try {
-                    const response = await fetch(getImageUrl(image))
-                    const blob = await response.blob()
-                    const filename = image.split('/').pop() || 'image.jpg'
-                    const file = new File([blob], filename, { type: blob.type })
-                    allFiles.push(file)
-                  } catch (error) {
-                    console.error('Failed to convert image to file:', error)
-                  }
-                }
-
                 updateMutation.mutate({
                   id: product.id,
                   name: nameInput.value.trim(),
                   description: descriptionInput.value.trim(),
-                  files: allFiles,
-                  images: [],
+                  files,
                   imagesToDelete,
                   storeUrl: storeUrlInput.value.trim() || undefined,
                   categoryId: categoryInput.value,
