@@ -180,6 +180,18 @@ export function ProductEditMode({
             </div>
           )}
 
+          {/* Hidden file input - always in DOM so ref works */}
+          <Input
+            ref={fileInputRef}
+            id="edit-files"
+            name="newFiles"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
           {previews.length > 0 ? (
             <div className="grid grid-cols-4 gap-2">
               {previews.map((preview, index) => (
@@ -209,11 +221,7 @@ export function ProductEditMode({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() =>
-                    fileInputRef.current?.dispatchEvent(
-                      new MouseEvent('click', { bubbles: true }),
-                    )
-                  }
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   Add More
                 </Button>
@@ -225,16 +233,6 @@ export function ProductEditMode({
                 <p className="text-sm text-muted-foreground">
                   Click to upload or drag and drop
                 </p>
-                <Input
-                  ref={fileInputRef}
-                  id="edit-files"
-                  name="newFiles"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
                 <Button
                   type="button"
                   variant="outline"
