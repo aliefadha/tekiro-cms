@@ -128,16 +128,6 @@ export function ProductEditMode({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-storeUrl">Store URL (Optional)</Label>
-          <Input
-            id="edit-storeUrl"
-            name="storeUrl"
-            defaultValue={product.storeUrl || ''}
-            placeholder="https://tokopedia.com/..."
-          />
-        </div>
-
-        <div className="space-y-2">
           <Label>Images</Label>
 
           {product.images.length > 0 && (

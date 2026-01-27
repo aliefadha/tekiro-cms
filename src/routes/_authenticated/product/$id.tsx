@@ -149,9 +149,6 @@ function ProductDetailPage() {
                 const categoryInput = form.querySelector(
                   '[name="categoryId"]',
                 ) as HTMLSelectElement
-                const storeUrlInput = form.querySelector(
-                  '[name="storeUrl"]',
-                ) as HTMLInputElement
 
                 if (
                   !nameInput.value ||
@@ -168,7 +165,7 @@ function ProductDetailPage() {
                   description: descriptionInput.value.trim(),
                   files,
                   imagesToDelete,
-                  storeUrl: storeUrlInput.value.trim() || undefined,
+
                   categoryId: categoryInput.value,
                 })
               }}

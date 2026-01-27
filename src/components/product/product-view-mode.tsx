@@ -1,4 +1,3 @@
-import { ExternalLink } from 'lucide-react'
 import { getImageUrl } from '@/lib/api-client'
 
 interface ProductViewModeProps {
@@ -42,20 +41,6 @@ export function ProductViewMode({ product }: ProductViewModeProps) {
           <p className="text-sm text-muted-foreground mb-1">Category</p>
           <p className="font-medium">{product.category.name}</p>
         </div>
-        {product.storeUrl && (
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">Store URL</p>
-            <a
-              href={product.storeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-blue-600 hover:underline"
-            >
-              Visit Store
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          </div>
-        )}
       </div>
       <div>
         <p className="text-sm text-muted-foreground mb-1">Description</p>

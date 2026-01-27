@@ -29,7 +29,7 @@ function CreateProductPage() {
   const [description, setDescription] = useState('')
   const [files, setFiles] = useState<Array<File>>([])
   const [previews, setPreviews] = useState<Array<string>>([])
-  const [storeUrl, setStoreUrl] = useState('')
+
   const [categoryId, setCategoryId] = useState('')
 
   const { data: categories = [] } = useQuery({
@@ -96,7 +96,7 @@ function CreateProductPage() {
       name: name.trim(),
       description: description.trim(),
       files,
-      storeUrl: storeUrl.trim() || undefined,
+
       categoryId,
     })
   }
@@ -154,15 +154,7 @@ function CreateProductPage() {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="storeUrl">Store URL (Optional)</Label>
-          <Input
-            id="storeUrl"
-            value={storeUrl}
-            onChange={(e) => setStoreUrl(e.target.value)}
-            placeholder="https://tokopedia.com/..."
-          />
-        </div>
+
         <div className="space-y-2">
           <Label htmlFor="files">Images</Label>
           <Input
