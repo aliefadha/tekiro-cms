@@ -1,0 +1,9 @@
+services:
+  tekiro-cms:
+    container_name: tekiro-cms
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3002:80"
+    restart: unless-stopped
