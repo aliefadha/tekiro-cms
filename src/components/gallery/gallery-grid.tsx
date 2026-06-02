@@ -1,14 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Globe, Instagram, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { ImageCard } from './image-card'
 import { CreateImageDialog } from './create-image-dialog'
-import { CreateInstagramDialog } from './create-instagram-dialog'
 import { ImagePreviewDialog } from './image-preview-dialog'
 import type { GalleryImage } from '@/lib/api/gallery'
 import { galleryApi } from '@/lib/api/gallery'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 
@@ -21,19 +19,8 @@ interface GalleryGridProps {
 
 export function GalleryGrid({ className }: GalleryGridProps) {
   const queryClient = useQueryClient()
-  const [activeTab, setActiveTab] = useState<'instagram' | 'web'>('instagram')
   const [isWebDialogOpen, setIsWebDialogOpen] = useState(false)
-  const [isInstagramDialogOpen, setIsInstagramDialogOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
-
-  const {
-    data: instagramImages = [],
-    isLoading: instagramLoading,
-    error: instagramError,
-  } = useQuery({
-    queryKey: ['gallery', 'instagram'],
-    queryFn: galleryApi.getInstagramGallery,
-  })
 
   const {
     data: webImages = [],
@@ -49,19 +36,6 @@ export function GalleryGrid({ className }: GalleryGridProps) {
     onSuccess: () => {
       toast.success('Image deleted successfully')
       queryClient.invalidateQueries({ queryKey: ['gallery', 'web'] })
-    },
-    onError: (error) => {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to delete image',
-      )
-    },
-  })
-
-  const deleteInstagramMutation = useMutation({
-    mutationFn: galleryApi.deleteInstagramImage,
-    onSuccess: () => {
-      toast.success('Image deleted successfully')
-      queryClient.invalidateQueries({ queryKey: ['gallery', 'instagram'] })
     },
     onError: (error) => {
       toast.error(
@@ -110,72 +84,28 @@ export function GalleryGrid({ className }: GalleryGridProps) {
 
   return (
     <div className={className}>
-      <Tabs
-        value={activeTab}
-        onValueChange={(v) => setActiveTab(v as 'instagram' | 'web')}
-      >
-        <div className="flex items-center justify-between mb-6">
-          <TabsList>
-            <TabsTrigger value="instagram" className="gap-2">
-              <Instagram className="w-4 h-4" />
-              Instagram
-            </TabsTrigger>
-            <TabsTrigger value="web" className="gap-2">
-              <Globe className="w-4 h-4" />
-              Web Gallery
-            </TabsTrigger>
-          </TabsList>
-          {activeTab === 'instagram' && (
-            <Dialog
-              open={isInstagramDialogOpen}
-              onOpenChange={setIsInstagramDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button size="sm" className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Add Image
-                </Button>
-              </DialogTrigger>
-            </Dialog>
-          )}
-          {activeTab === 'web' && (
-            <Dialog open={isWebDialogOpen} onOpenChange={setIsWebDialogOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Add Image
-                </Button>
-              </DialogTrigger>
-            </Dialog>
-          )}
-        </div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold">Web Gallery</h2>
+        <Dialog open={isWebDialogOpen} onOpenChange={setIsWebDialogOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" className="gap-2">
+              <Plus className="w-4 h-4" />
+              Add Image
+            </Button>
+          </DialogTrigger>
+        </Dialog>
+      </div>
 
-        <TabsContent value="instagram" className="mt-0">
-          {renderGrid(
-            instagramImages,
-            instagramLoading,
-            instagramError,
-            deleteInstagramMutation.mutate,
-          )}
-        </TabsContent>
-
-        <TabsContent value="web" className="mt-0">
-          {renderGrid(
-            webImages,
-            webLoading,
-            webError,
-            deleteWebMutation.mutate,
-          )}
-        </TabsContent>
-      </Tabs>
+      {renderGrid(
+        webImages,
+        webLoading,
+        webError,
+        deleteWebMutation.mutate,
+      )}
 
       <CreateImageDialog
         open={isWebDialogOpen}
         onOpenChange={setIsWebDialogOpen}
-      />
-      <CreateInstagramDialog
-        open={isInstagramDialogOpen}
-        onOpenChange={setIsInstagramDialogOpen}
       />
       <ImagePreviewDialog
         open={!!selectedImage}
@@ -185,3 +115,4 @@ export function GalleryGrid({ className }: GalleryGridProps) {
     </div>
   )
 }
+

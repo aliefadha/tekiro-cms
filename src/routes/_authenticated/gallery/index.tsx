@@ -11,7 +11,7 @@ function RouteComponent() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Gallery</h1>
         <p className="text-muted-foreground">
-          Manage your Instagram and web gallery images
+          Manage your web gallery images
         </p>
       </div>
       <GalleryGrid />
