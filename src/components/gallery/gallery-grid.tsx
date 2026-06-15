@@ -96,12 +96,7 @@ export function GalleryGrid({ className }: GalleryGridProps) {
         </Dialog>
       </div>
 
-      {renderGrid(
-        webImages,
-        webLoading,
-        webError,
-        deleteWebMutation.mutate,
-      )}
+      {renderGrid(webImages, webLoading, webError, deleteWebMutation.mutate)}
 
       <CreateImageDialog
         open={isWebDialogOpen}
@@ -115,4 +110,3 @@ export function GalleryGrid({ className }: GalleryGridProps) {
     </div>
   )
 }
-

@@ -2,6 +2,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { ArrowLeft } from 'lucide-react'
 import { productApi } from '@/lib/api/product'
 import { categoryApi } from '@/lib/api/category'
 import { Button } from '@/components/ui/button'
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ArrowLeft } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/product/create')({
   component: CreateProductPage,

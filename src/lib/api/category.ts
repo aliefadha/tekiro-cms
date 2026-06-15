@@ -7,7 +7,7 @@ export interface Category {
 }
 
 export async function getCategories() {
-  const response = await apiClient.get<Array<Category>>('/category')
+  const response = await apiClient.get<Array<Category>>('/category/admin')
   return response.data
 }
 

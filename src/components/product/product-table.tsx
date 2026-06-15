@@ -92,9 +92,9 @@ export function ProductTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Images</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead className="w-[240px]">Images</TableHead>
+              <TableHead className="w-[200px] max-w-[200px]">Name</TableHead>
+              <TableHead className="w-[150px]">Category</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -102,26 +102,32 @@ export function ProductTable({
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
-                  <div className="flex gap-1">
-                    {product.images.slice(0, 3).map((image, idx) => (
-                      <img
-                        key={idx}
-                        src={getImageUrl(image)}
-                        alt={`${product.name} ${idx + 1}`}
-                        className="h-12 w-12 rounded-md object-cover"
-                      />
-                    ))}
-                    {product.images.length > 3 && (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
-                        +{product.images.length - 3}
-                      </div>
-                    )}
-                  </div>
+                  {product.images.length > 0 ? (
+                    <div className="flex gap-1">
+                      {product.images.slice(0, 3).map((image, idx) => (
+                        <img
+                          key={idx}
+                          src={getImageUrl(image)}
+                          alt={`${product.name} ${idx + 1}`}
+                          className="h-12 w-12 rounded-md object-cover border shrink-0"
+                        />
+                      ))}
+                      {product.images.length > 3 && (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground border border-dashed shrink-0">
+                          +{product.images.length - 3}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="h-12 w-12 rounded-md bg-muted flex items-center justify-center text-xs text-muted-foreground border border-dashed shrink-0">
+                      No img
+                    </div>
+                  )}
                 </TableCell>
-                <TableCell>
-                  <div>
-                    <p className="font-medium">{product.name}</p>
-                  </div>
+                <TableCell className="max-w-[500px]">
+                  <p className="font-medium" title={product.name}>
+                    {product.name}
+                  </p>
                 </TableCell>
                 <TableCell>
                   <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">

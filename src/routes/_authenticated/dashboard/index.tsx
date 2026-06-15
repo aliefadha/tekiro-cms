@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import {
   BookOpen,
@@ -107,12 +107,6 @@ function DashboardPage() {
     queryFn: galleryApi.getWebGallery,
   })
 
-  const { data: instagramImages = [], isLoading: instagramImagesLoading } =
-    useQuery({
-      queryKey: ['instagram'],
-      queryFn: galleryApi.getInstagramGallery,
-    })
-
   const { data: articles = [], isLoading: articlesLoading } = useQuery({
     queryKey: ['articles'],
     queryFn: articleApi.getArticles,
@@ -129,11 +123,8 @@ function DashboardPage() {
     productsLoading ||
     catalogsLoading ||
     webImagesLoading ||
-    instagramImagesLoading ||
     articlesLoading ||
     cordlessItemsLoading
-
-  const totalGalleryImages = webImages.length + instagramImages.length
 
   if (isLoading) {
     return (
@@ -174,7 +165,7 @@ function DashboardPage() {
     },
     {
       title: 'Gallery Images',
-      count: totalGalleryImages,
+      count: webImages.length,
       icon: <ImageIcon className="h-6 w-6 text-[#85E408]" />,
       href: '/gallery',
     },
